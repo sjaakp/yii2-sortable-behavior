@@ -1,0 +1,23 @@
+{
+    "name": "sjaakp/yii2-sortable-behavior",
+    "description": "Sort ActiveRecords and related records in Yii2.",
+    "keywords": ["yii", "yii2", "extension", "widget", "behavior", "sort", "order"],
+    "type": "yii2-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sjaak Priester",
+            "email": "sjaak@sjaakpriester.nl",
+            "homepage": "http://sjaakpriester.nl"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "yiisoft/yii2-jui": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "sjaakp\\sortable\\": ""
+        }
+    }
+}
