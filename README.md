@@ -7,7 +7,21 @@ This package contains five classes to handle the sorting of ActiveRecords:
 - **SortableListView** - extended ListView widget;
 - **Sortable** - ActiveRecord Behavior to handle the sorting of the records themselves, or of the one-to-many related records;
 - **PivotRecord** - base class for the ActiveRecord of the pivot table in a many-to-many relation.
-- **MMSortable** - ActiveRecord Behavior to handle the sorting of many-to-many related records;
+- **MMSortable** - ActiveRecord Behavior to handle the sorting of many-to-many related records.
+
+A demonstration of the **Sortable** suit is [here](http://www.sjaakpriester.nl/director/index).
+
+## Installation ##
+
+The preferred way to install **Sortable** is through [Composer](https://getcomposer.org/). Either add the following to the require section of your `composer.json` file:
+
+`"sjaakp/yii2-sortable-behavior": "*"` 
+
+Or run:
+
+`$ php composer.phar require sjaakp/yii2-sortable-behavior "*"` 
+
+You can manually install **Sortable** by [downloading the source in ZIP-format](https://github.com/sjaakp/yii2-sortable-behavior/archive/master.zip).
 
 ## SortableGridView and SortableListView ##
 
