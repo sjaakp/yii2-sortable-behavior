@@ -17,7 +17,7 @@ namespace sjaakp\sortable;
 
 use Yii;
 use yii\widgets\ListView;
-use yii\jui\SortableAsset;
+use yii\jui\JuiAsset;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\JsExpression;
@@ -60,7 +60,7 @@ class SortableListView extends ListView {
         $this->options['class'] = trim($classes);
 
         $view = $this->getView();
-        SortableAsset::register($view);
+        JuiAsset::register($view);
 
         $url = Url::toRoute($this->orderUrl);
 
