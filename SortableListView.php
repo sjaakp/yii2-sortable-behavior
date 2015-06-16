@@ -1,5 +1,19 @@
 <?php
-namespace app\modules\admin\widgets;
+/**		+namespace app\modules\admin\widgets;
+ * MIT licence		
+ * Version 1.0		
+ * Sjaak Priester, Amsterdam 28-08-2014.		
+ *		
+ * Sortable ListView for Yii 2.0		
+ *		
+ * ListView which is made sortable by means of the jQuery Sortable widget.		
+ * After each order operation, order data are posted to $orderUrl in the following format:		
+ * - $_POST["key"] - the primary key of the sorted ActiveRecord,		
+ * - $_POST["pos"] - the new position, zero-indexed.		
+ *		
+ */		
+		
+namespace sjaakp\sortable;
 
 use Yii;
 use yii\widgets\ListView;
