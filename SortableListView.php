@@ -1,18 +1,18 @@
 <?php
-/**
- * MIT licence
- * Version 1.0
- * Sjaak Priester, Amsterdam 28-08-2014.
- *
- * Sortable ListView for Yii 2.0
- *
- * ListView which is made sortable by means of the jQuery Sortable widget.
- * After each order operation, order data are posted to $orderUrl in the following format:
- * - $_POST["key"] - the primary key of the sorted ActiveRecord,
- * - $_POST["pos"] - the new position, zero-indexed.
- *
- */
-
+/**		+namespace app\modules\admin\widgets;
+ * MIT licence		
+ * Version 1.0		
+ * Sjaak Priester, Amsterdam 28-08-2014.		
+ *		
+ * Sortable ListView for Yii 2.0		
+ *		
+ * ListView which is made sortable by means of the jQuery Sortable widget.		
+ * After each order operation, order data are posted to $orderUrl in the following format:		
+ * - $_POST["key"] - the primary key of the sorted ActiveRecord,		
+ * - $_POST["pos"] - the new position, zero-indexed.		
+ *		
+ */		
+		
 namespace sjaakp\sortable;
 
 use Yii;
@@ -63,10 +63,10 @@ class SortableListView extends ListView {
         JuiAsset::register($view);
 
         $url = Url::toRoute($this->orderUrl);
-
-        $sortOpts = array_merge($this->sortOptions, [
-            'axis' => 'y',
+        
+        $mainOptions = [
             'items' => '[data-key]',
+            'axis' => 'y',
             'update' => new JsExpression("function(e, ui) {
                 jQuery('#{$this->id}').addClass('sorting');
                 jQuery.ajax({
@@ -81,10 +81,16 @@ class SortableListView extends ListView {
                     }
                 });
             }")
-        ]);
+        ];
+        
+        if ($this->sortOptions["axis"] === false)
+            unset($mainOptions["axis"]);
+
+        $sortOpts = array_merge($this->sortOptions, $mainOptions);
 
         $sortJson = Json::encode($sortOpts);
 
         $view->registerJs("jQuery('#{$id}').sortable($sortJson);");
     }
 }
+
