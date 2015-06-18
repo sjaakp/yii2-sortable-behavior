@@ -1,7 +1,7 @@
 <?php
 /**
  * MIT licence
- * Version 1.0
+ * Version 1.0.1
  * Sjaak Priester, Amsterdam 28-08-2014.
  *
  * Sortable GridView for Yii 2.0
@@ -43,10 +43,16 @@ class SortableGridView extends GridView {
      * @var array
      * The options for the jQuery sortable object.
      * See http://api.jqueryui.com/sortable/ .
-     * Notice that the options 'axis', 'helper', and 'update' will be overwritten.
+     * Notice that the options 'helper' and 'update' will be overwritten.
      * Default: empty array.
      */
     public $sortOptions = [];
+
+    /**
+     * @var boolean|string
+     * The 'axis'-option of the jQuery sortable. If false, it is not set.
+     */
+    public $sortAxis = 'y';
 
     public function init()
     {
@@ -62,7 +68,6 @@ class SortableGridView extends GridView {
         $url = Url::toRoute($this->orderUrl);
 
         $sortOpts = array_merge($this->sortOptions, [
-            'axis' => 'y',
             'helper' => new JsExpression('function(e, ui) {
                 ui.children().each(function() {
                    $(this).width($(this).width());
@@ -84,6 +89,8 @@ class SortableGridView extends GridView {
                 });
             }")
         ]);
+
+        if ($this->sortAxis) $sortOpts['axis'] = $this->sortAxis;
 
         $sortJson = Json::encode($sortOpts);
         $id = $this->getId();

@@ -1,7 +1,7 @@
 <?php
 /**
  * MIT licence
- * Version 1.0
+ * Version 1.0.1
  * Sjaak Priester, Amsterdam 28-08-2014.
  *
  * Sortable ListView for Yii 2.0
@@ -42,11 +42,17 @@ class SortableListView extends ListView {
     /**
      * @var array
      * The options for the jQuery sortable object.
-     * See http://api.jqueryui.com/sortable/ .
-     * Notice that the options 'axis', 'items', and 'update' will be overwritten.
+     * @link http://api.jqueryui.com/sortable/ .
+     * Notice that the options 'items' and 'update' will be overwritten.
      * Default: empty array.
      */
     public $sortOptions = [];
+
+    /**
+     * @var boolean|string
+     * The 'axis'-option of the jQuery sortable. If false, it is not set.
+     */
+    public $sortAxis = 'y';
 
     public function init()
     {
@@ -65,7 +71,6 @@ class SortableListView extends ListView {
         $url = Url::toRoute($this->orderUrl);
 
         $sortOpts = array_merge($this->sortOptions, [
-            'axis' => 'y',
             'items' => '[data-key]',
             'update' => new JsExpression("function(e, ui) {
                 jQuery('#{$this->id}').addClass('sorting');
@@ -82,6 +87,8 @@ class SortableListView extends ListView {
                 });
             }")
         ]);
+
+        if ($this->sortAxis) $sortOpts['axis'] = $this->sortAxis;
 
         $sortJson = Json::encode($sortOpts);
 
