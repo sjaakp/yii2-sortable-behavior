@@ -47,14 +47,17 @@ class Sortable extends Behavior {
         ];
     }
 
-    public function beforeInsert($event)  {
+ public function beforeInsert($event)  {
         $this->saveDelHelper(function($orderAttr, $where) {
             /**
              * @var $owner ActiveRecord
              */
             $owner = $this->owner;
 
-            $owner->setAttribute($orderAttr, $owner->find()->where($where)->count());
+            $count = $owner->find();
+            if ($where != 1) $count->where($where);
+
+            $owner->setAttribute($orderAttr, $count->count());
         });
     }
 
@@ -95,7 +98,7 @@ class Sortable extends Behavior {
         }
     }
 
-    /**
+ /**
      * @param integer $newPosition          zero indexed position
      * @param null|string $foreignKeyName   if null, all records are ordered
      *                                      if string, ordering is restricted to records with the same foreign key value
@@ -106,6 +109,7 @@ class Sortable extends Behavior {
          * @var $owner ActiveRecord
          */
         $owner = $this->owner;
+
 
         if ($foreignKeyName)    {   // restrict order to records with the same foreign key value
             if (! is_array($this->orderAttribute) || ! isset($this->orderAttribute[$foreignKeyName]))
@@ -127,7 +131,7 @@ class Sortable extends Behavior {
             else $orderAttr = $this->orderAttribute;
             if (! $orderAttr)
                 throw new InvalidConfigException('No default order attribute found in '. get_called_class());
-            $where = 1;
+            $where = null;
         }
 
         $oldPosition = $owner->getAttribute($orderAttr);
@@ -137,24 +141,23 @@ class Sortable extends Behavior {
          */
         $trans = $owner->db->beginTransaction();
 
+
+
+
         try {
             if ($newPosition > $oldPosition)  {
                 // new position greater than old position,
                 // so all positions from old position + 1 up to and including new position should decrement
-                $owner->updateAllCounters([$orderAttr => -1],[
-                    'and',
-                    $where,
-                    ['between', $orderAttr, $oldPosition + 1, $newPosition]
-                ]);
+                if ($where === null) $owner->updateAllCounters([$orderAttr => -1],['and', ['between', $orderAttr, $oldPosition + 1, $newPosition] ]);
+                else $owner->updateAllCounters([$orderAttr => -1],['and', $where, ['between', $orderAttr, $oldPosition + 1, $newPosition] ]);
             }
             else    {
                 // new position smaller than or equal to old position,
                 // so all positions from new position up to and including old position - 1 should increment
-                $owner->updateAllCounters([$orderAttr => 1],[
-                    'and',
-                    $where,
-                    ['between', $orderAttr, $newPosition, $oldPosition - 1]
-                ]);
+                if ($where === null)
+                    $owner->updateAllCounters([$orderAttr => 1],[ 'and', ['between', $orderAttr, $newPosition, $oldPosition - 1] ]);
+                else
+                    $owner->updateAllCounters([$orderAttr => 1],[ 'and', $where, ['between', $orderAttr, $newPosition, $oldPosition - 1] ]);
             }
             $owner->setAttribute($orderAttr, $newPosition);
             $owner->save(false, [$orderAttr]);
