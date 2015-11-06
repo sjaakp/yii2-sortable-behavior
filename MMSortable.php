@@ -5,7 +5,7 @@
  * Sjaak Priester, Amsterdam 28-08-2014.
  */
 
-namespace sjaakp\sortable;
+namespace iamkuper\sortable;
 
 use yii\base\Behavior;
 use yii\helpers\StringHelper;

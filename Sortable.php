@@ -15,7 +15,7 @@
  * A new record is inserted at the end of the order.
  */
 
-namespace sjaakp\sortable;
+namespace iamkuper\sortable;
 
 use yii\base\Behavior;
 use yii\base\Exception;
