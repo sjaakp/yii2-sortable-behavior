@@ -156,8 +156,8 @@ class Sortable extends Behavior {
                     ['between', $orderAttr, $newPosition, $oldPosition - 1]
                 ]);
             }
-            $owner->setAttribute($orderAttr, $newPosition);
-            $owner->save(false, [$orderAttr]);
+
+            $owner->updateAttributes([$orderAttr => $newPosition]);
             $trans->commit();
         } catch (Exception $e)  {
             $trans->rollBack();
