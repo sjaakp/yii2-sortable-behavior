@@ -446,4 +446,4 @@ Now, in `movie/view`, we can display a **SortableGridView** with all the actors 
 ## Thanks ##
 
 - **mike-kramer** (sortAxis option)
- 
+- **menshakov** (use updateAttributes)
