@@ -1,18 +1,18 @@
 <?php
-/**		+namespace app\modules\admin\widgets;
- * MIT licence		
- * Version 1.0		
- * Sjaak Priester, Amsterdam 28-08-2014.		
- *		
- * Sortable ListView for Yii 2.0		
- *		
- * ListView which is made sortable by means of the jQuery Sortable widget.		
- * After each order operation, order data are posted to $orderUrl in the following format:		
- * - $_POST["key"] - the primary key of the sorted ActiveRecord,		
- * - $_POST["pos"] - the new position, zero-indexed.		
- *		
- */		
-		
+/**
+ * MIT licence
+ * Version 1.0.1
+ * Sjaak Priester, Amsterdam 28-08-2014.
+ *
+ * Sortable ListView for Yii 2.0
+ *
+ * ListView which is made sortable by means of the jQuery Sortable widget.
+ * After each order operation, order data are posted to $orderUrl in the following format:
+ * - $_POST["key"] - the primary key of the sorted ActiveRecord,
+ * - $_POST["pos"] - the new position, zero-indexed.
+ *
+ */
+
 namespace sjaakp\sortable;
 
 use Yii;
@@ -42,11 +42,17 @@ class SortableListView extends ListView {
     /**
      * @var array
      * The options for the jQuery sortable object.
-     * See http://api.jqueryui.com/sortable/ .
-     * Notice that the options 'axis', 'items', and 'update' will be overwritten.
+     * @link http://api.jqueryui.com/sortable/ .
+     * Notice that the options 'items' and 'update' will be overwritten.
      * Default: empty array.
      */
     public $sortOptions = [];
+
+    /**
+     * @var boolean|string
+     * The 'axis'-option of the jQuery sortable. If false, it is not set.
+     */
+    public $sortAxis = 'y';
 
     public function init()
     {
@@ -63,8 +69,8 @@ class SortableListView extends ListView {
         JuiAsset::register($view);
 
         $url = Url::toRoute($this->orderUrl);
-        
-        $mainOptions = [
+
+        $sortOpts = array_merge($this->sortOptions, [
             'items' => '[data-key]',
             'axis' => 'y',
             'update' => new JsExpression("function(e, ui) {
@@ -87,6 +93,8 @@ class SortableListView extends ListView {
             unset($mainOptions["axis"]);
 
         $sortOpts = array_merge($this->sortOptions, $mainOptions);
+
+        if ($this->sortAxis) $sortOpts['axis'] = $this->sortAxis;
 
         $sortJson = Json::encode($sortOpts);
 

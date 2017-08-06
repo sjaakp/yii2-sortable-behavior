@@ -30,7 +30,7 @@ These widgets are derived from the standard GridView and ListView classes, but h
 - `key`: the value of the item's primary key;
 - `pos`: the zero-indexed new position of the item.
 
-**SortableGridView** and **SortableListView** have two extra configurable properties:
+**SortableGridView** and **SortableListView** have three extra configurable properties:
 
 #### orderUrl ####
 
@@ -41,9 +41,13 @@ The format is that of `yii\helpers\Url::toRoute`.
 
 `array`. The options for the jQuery sortable object. See [http://api.jqueryui.com/sortable/](http://api.jqueryui.com/sortable/).
 
-Notice that the options `'axis'`, `'items'`, `'helper'`, and `'update'` will be overwritten.
+Notice that the options `'items'`, `'helper'`, and `'update'` will be overwritten.
 
 Default: `[]` (empty array).
+
+#### sortAxis ####
+
+`boolean|string` The `'axis'` option for the jQuery sortable. If `false`, it is not set. Default: `'y'`.
 
 ## Sortable ##
 
@@ -439,3 +443,7 @@ Now, in `movie/view`, we can display a **SortableGridView** with all the actors 
 		...
     ] ); ?>
 
+## Thanks ##
+
+- **mike-kramer** (sortAxis option)
+- **menshakov** (use updateAttributes)
