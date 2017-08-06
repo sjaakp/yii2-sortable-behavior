@@ -80,7 +80,7 @@ class SortableListView extends ListView {
                     url: '$url',
                     data: {
                         key: ui.item.data('key'),
-                        pos: ui.item.index('[data-key]')
+                        pos: ui.item.index('#{$this->id} [data-key]')
                     },
                     complete: function() {
                         jQuery('#{$this->id}').removeClass('sorting');
