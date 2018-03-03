@@ -177,7 +177,7 @@ In the `Director` model we define an one-to-many relation, like we would normall
 	class Director extends ActiveRecord	{
 		...
     	public function getMovies( ) {
-        	return $this->hasMany( Movie::className( ), ['director_id' => 'id'] )
+        	return $this->hasMany( Movie::class, ['director_id' => 'id'] )
         	    ->orderBy( 'director_ord' );
     	}
 		...
@@ -303,11 +303,11 @@ A complete definition of a pivot record might look like this:
 	class MovieActor extends PivotRecord    {
 
 	    protected static function aClass( )   {
-	        return Movie::className( );
+	        return Movie::class;
 	    }
 
 	    protected static function bClass( )   {
-	        return Actor::className( );
+	        return Actor::class;
 	    }
 	}
 
@@ -369,11 +369,11 @@ First, we define a pivot class, like so:
 	class MovieActor extends PivotRecord    {
 
 	    protected static function aClass( )   {
-	        return Movie::className( );
+	        return Movie::class;
 	    }
 
 	    protected static function bClass( )   {
-	        return Actor::className( );
+	        return Actor::class;
 	    }
 	}
 
@@ -385,7 +385,7 @@ Then, we make sure that both `Movie` and `Actor` have a **MMSortable** Behavior:
 	        return [
 	            [
 	                'class' => 'sjaakp\sortable\MMSortable',
-	                'pivotClass' => MovieActor::className( )
+	                'pivotClass' => MovieActor::class
 	            ]
 	        ];
 	    }
