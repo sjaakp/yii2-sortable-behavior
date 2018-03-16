@@ -13,7 +13,7 @@
  *
  */
 
-namespace sjaakp\sortable;
+namespace iamkuper\sortable;
 
 use Yii;
 use yii\widgets\ListView;

@@ -1,5 +1,5 @@
 {
-    "name": "sjaakp/yii2-sortable-behavior",
+    "name": "iamkuper/yii2-sortable-behavior",
     "description": "Sort ActiveRecords and related records in Yii2.",
     "keywords": ["yii", "yii2", "extension", "widget", "behavior", "sort", "order"],
     "type": "yii2-extension",
@@ -17,7 +17,7 @@
     },
     "autoload": {
         "psr-4": {
-            "sjaakp\\sortable\\": ""
+            "iamkuper\\sortable\\": ""
         }
     }
 }
