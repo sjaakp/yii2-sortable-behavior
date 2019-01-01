@@ -1,8 +1,9 @@
 <?php
 /**
  * MIT licence
- * Version 1.0
- * Sjaak Priester, Amsterdam 28-08-2014.
+ * Version 1.0.1
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 01-01-2019.
+ * https://sjaakpriester.nl
  */
 
 namespace sjaakp\sortable;
@@ -39,7 +40,7 @@ class MMSortable extends Behavior {
     protected function idAttr() {
         if (is_null($this->pivotIdAttr))    {
             $owner = $this->owner;
-            $this->pivotIdAttr = Inflector::camel2id(StringHelper::basename($owner->className()), '_') . '_id';
+            $this->pivotIdAttr = Inflector::camel2id(StringHelper::basename(get_class($owner)), '_') . '_id';
         }
         return $this->pivotIdAttr;
     }

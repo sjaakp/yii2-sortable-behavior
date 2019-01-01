@@ -19,7 +19,7 @@ The preferred way to install **Sortable** is through [Composer](https://getcompo
 
 Or run:
 
-`$ php composer.phar require sjaakp/yii2-sortable-behavior "*"` 
+`composer require sjaakp/yii2-sortable-behavior "*"` 
 
 You can manually install **Sortable** by [downloading the source in ZIP-format](https://github.com/sjaakp/yii2-sortable-behavior/archive/master.zip).
 
@@ -39,7 +39,7 @@ The format is that of `yii\helpers\Url::toRoute`.
 
 #### sortOptions ####
 
-`array`. The options for the jQuery sortable object. See [http://api.jqueryui.com/sortable/](http://api.jqueryui.com/sortable/).
+`array`. The options for the jQuery sortable object. See [https://api.jqueryui.com/sortable/](http://api.jqueryui.com/sortable/).
 
 Notice that the options `'items'`, `'helper'`, and `'update'` will be overwritten.
 
@@ -150,7 +150,7 @@ In the `index` view, we use a **SortableGridView**:
 		...
     ] ); ?>
 
-And bingo! The list of movie titles is now sortable by drag and drop, say on preference.
+And bingo! The list of movie titles is now sortable by drag and drop.
 
 ----------
 

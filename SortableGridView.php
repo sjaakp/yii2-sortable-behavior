@@ -2,7 +2,8 @@
 /**
  * MIT licence
  * Version 1.0.1
- * Sjaak Priester, Amsterdam 28-08-2014.
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 01-01-2019.
+ * https://sjaakpriester.nl
  *
  * Sortable GridView for Yii 2.0
  *
@@ -15,7 +16,6 @@
 
 namespace sjaakp\sortable;
 
-use Yii;
 use yii\grid\GridView;
 use yii\jui\JuiAsset;
 use yii\helpers\Json;

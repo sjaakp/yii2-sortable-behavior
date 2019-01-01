@@ -1,8 +1,9 @@
 <?php
 /**
  * MIT licence
- * Version 1.0
- * Sjaak Priester, Amsterdam 31-08-2014.
+ * Version 1.0.1
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 01-01-2019.
+ * https://sjaakpriester.nl
  */
 
 namespace sjaakp\sortable;
@@ -180,6 +181,7 @@ class PivotRecord extends ActiveRecord {
     /**
      * @param ActiveRecord $b
      * @return ActiveQuery with all the A's belonging to B
+     * @throws InvalidConfigException
      */
     public static function getAs(ActiveRecord $b)  {
         /**
@@ -196,6 +198,11 @@ class PivotRecord extends ActiveRecord {
         return $r;
     }
 
+    /**
+     * @param ActiveRecord $a
+     * @return ActiveQuery with all the B's belonging to A
+     * @throws InvalidConfigException
+     */
     public static function getBs(ActiveRecord $a)  {
         /**
          * @var $class ActiveRecord

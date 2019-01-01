@@ -1,8 +1,9 @@
 <?php
 /**
  * MIT licence
- * Version 1.0
- * Sjaak Priester, Amsterdam 31-08-2014.
+ * Version 1.0.1
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 01-01-2019.
+ * https://sjaakpriester.nl
  *
  * ActiveRecord Behavior for Yii 2.0
  *
@@ -96,10 +97,11 @@ class Sortable extends Behavior {
     }
 
     /**
-     * @param integer $newPosition          zero indexed position
-     * @param null|string $foreignKeyName   if null, all records are ordered
+     * @param integer $newPosition zero indexed position
+     * @param null|string $foreignKeyName if null, all records are ordered
      *                                      if string, ordering is restricted to records with the same foreign key value
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function order($newPosition, $foreignKeyName = null) {
         /**
