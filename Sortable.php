@@ -1,8 +1,8 @@
 <?php
 /**
  * MIT licence
- * Version 1.0.1
- * Sjaak Priester, Amsterdam 28-08-2014 ... 01-01-2019.
+ * Version 1.1.0
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 06-01-2019.
  * https://sjaakpriester.nl
  *
  * ActiveRecord Behavior for Yii 2.0
@@ -14,6 +14,8 @@
  * The function order($newPosition, $foreignKeyName) can be used to modify the position of the record in the order.
  * If $foreignKeyName is given, the ordering is restricted to records with the same value of $foreignKeyName.
  * A new record is inserted at the end of the order.
+ *
+ * Version 1.1 handles the situation where the foreign key value is changed on update.
  */
 
 namespace sjaakp\sortable;
@@ -45,49 +47,104 @@ class Sortable extends Behavior {
         return [
             ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
             ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
         ];
     }
 
+    /**
+     * @param $event
+     * @throws \yii\db\Exception
+     */
     public function beforeInsert($event)  {
-        $this->saveDelHelper(function($orderAttr, $where) {
-            /**
-             * @var $owner ActiveRecord
-             */
-            $owner = $this->owner;
-
-            $owner->setAttribute($orderAttr, $owner->find()->where($where)->count());
-        });
+        $this->saveDelHelper($this->addToOrder);
     }
 
+    /**
+     * @param $event
+     * @throws \yii\db\Exception
+     */
     public function beforeDelete($event)  {
-        $this->saveDelHelper(function($orderAttr, $where) {
-            /**
-             * @var $owner ActiveRecord
-             */
-            $owner = $this->owner;
-
-            $owner->UpdateAllCounters([$orderAttr => -1], [
-                    'and',
-                    $where,
-                    "{{{$orderAttr}}} > :order"
-                ],
-                [':order' => $owner->getAttribute($orderAttr)]
-            );
-        });
+        $this->saveDelHelper($this->removeFromOrder);
     }
 
+    /**
+     * @param $event
+     * @throws \yii\db\Exception
+     */
+    public function beforeUpdate($event)  {
+        $conf = $this->orderAttribute;
+        if (is_string($conf)) $conf = [$conf];
+
+        /**
+         * @var $owner ActiveRecord
+         * @var $trans Transaction
+         */
+        $owner = $this->owner;
+        $trans = $owner->db->beginTransaction();
+
+        try {
+            foreach ($conf as $fk => $orderAttr)   {
+                // only if foreignkey is changed...
+                if (! is_integer($fk) && $owner->isAttributeChanged($fk))  {
+                    // ... remove from ordered list with old foreignkey...
+                    $where = [ $fk => $owner->getOldAttribute($fk) ];
+                    $this->removeFromOrder($orderAttr, $where);
+                    // ... and add to ordered list with new foreignkey
+                    $where = [ $fk => $owner->getAttribute($fk) ];
+                    $this->addToOrder($orderAttr, $where);
+                }
+            }
+            $trans->commit();
+        } catch (Exception $e)  {
+            $trans->rollBack();
+        }
+    }
+
+    protected function addToOrder($orderAttr, $where)    {
+        /**
+         * @var $owner ActiveRecord
+         */
+        $owner = $this->owner;
+
+        // insert at the end of ordered list
+        $owner->setAttribute($orderAttr, $owner->find()->where($where)->count());
+    }
+
+    protected function removeFromOrder($orderAttr, $where)    {
+        /**
+         * @var $owner ActiveRecord
+         */
+        $owner = $this->owner;
+
+        // remove from ordered list, but keep positions contiguous
+        // by decrementing all positions which are greater
+        $owner->UpdateAllCounters([$orderAttr => -1], [
+            'and',
+            $where,
+            "{{{$orderAttr}}} > :order"
+        ],
+            [':order' => $owner->getAttribute($orderAttr)]
+        );
+    }
+
+    /**
+     * @param $func
+     * @throws \yii\db\Exception
+     */
     protected function saveDelHelper($func) {
         $conf = $this->orderAttribute;
         if (is_string($conf)) $conf = [$conf];
 
         /**
+         * @var $owner ActiveRecord
          * @var $trans Transaction
          */
-        $trans = $this->owner->db->beginTransaction();
+        $owner = $this->owner;
+        $trans = $owner->db->beginTransaction();
 
         try {
             foreach ($conf as $fk => $orderAttr)   {
-                $where = is_integer($fk) ? 1 : [$fk => $this->owner->getAttribute($fk)];
+                $where = is_integer($fk) ? 1 : [$fk => $owner->getAttribute($fk)];
                 call_user_func($func, $orderAttr, $where);
             }
             $trans->commit();

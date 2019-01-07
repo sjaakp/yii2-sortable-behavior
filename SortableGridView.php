@@ -65,6 +65,7 @@ class SortableGridView extends GridView {
         $view = $this->getView();
         JuiAsset::register($view);
 
+        $id = $this->getId();
         $url = Url::toRoute($this->orderUrl);
 
         $sortOpts = array_merge($this->sortOptions, [
@@ -75,7 +76,7 @@ class SortableGridView extends GridView {
                 return ui;
             }'),
             'update' => new JsExpression("function(e, ui) {
-                jQuery('#{$this->id}').addClass('sorting');
+                jQuery('#{$id}').addClass('sorting');
                 jQuery.ajax({
                     type: 'POST',
                     url: '$url',
@@ -84,7 +85,7 @@ class SortableGridView extends GridView {
                         pos: ui.item.index()
                     },
                     complete: function() {
-                        jQuery('#{$this->id}').removeClass('sorting');
+                        jQuery('#{$id}').removeClass('sorting');
                     }
                 });
             }")
@@ -93,7 +94,6 @@ class SortableGridView extends GridView {
         if ($this->sortAxis) $sortOpts['axis'] = $this->sortAxis;
 
         $sortJson = Json::encode($sortOpts);
-        $id = $this->getId();
 
         $view->registerJs("jQuery('#{$id} tbody').sortable($sortJson);");
     }

@@ -73,7 +73,7 @@ class SortableListView extends ListView {
         $sortOpts = array_merge($this->sortOptions, [
             'items' => '[data-key]',
             'update' => new JsExpression("function(e, ui) {
-                jQuery('#{$this->id}').addClass('sorting');
+                jQuery('#{$id}').addClass('sorting');
                 jQuery.ajax({
                     type: 'POST',
                     url: '$url',
@@ -82,7 +82,7 @@ class SortableListView extends ListView {
                         pos: ui.item.index('[data-key]')
                     },
                     complete: function() {
-                        jQuery('#{$this->id}').removeClass('sorting');
+                        jQuery('#{$id}').removeClass('sorting');
                     }
                 });
             }")
