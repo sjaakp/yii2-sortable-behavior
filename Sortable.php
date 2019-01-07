@@ -56,7 +56,7 @@ class Sortable extends Behavior {
      * @throws \yii\db\Exception
      */
     public function beforeInsert($event)  {
-        $this->saveDelHelper($this->addToOrder);
+        $this->saveDelHelper([$this, 'addToOrder']);
     }
 
     /**
@@ -64,7 +64,7 @@ class Sortable extends Behavior {
      * @throws \yii\db\Exception
      */
     public function beforeDelete($event)  {
-        $this->saveDelHelper($this->removeFromOrder);
+        $this->saveDelHelper([$this, 'removeFromOrder']);
     }
 
     /**
