@@ -1,8 +1,8 @@
 <?php
 /**
  * MIT licence
- * Version 1.0.1
- * Sjaak Priester, Amsterdam 28-08-2014 ... 01-01-2019.
+ * Version 1.0.2
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 24-04-2019.
  * https://sjaakpriester.nl
  *
  * Sortable GridView for Yii 2.0
@@ -18,6 +18,7 @@ namespace sjaakp\sortable;
 
 use yii\grid\GridView;
 use yii\jui\JuiAsset;
+use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\JsExpression;
@@ -54,13 +55,14 @@ class SortableGridView extends GridView {
      */
     public $sortAxis = 'y';
 
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
     public function init()
     {
         parent::init();
 
-        $classes = isset($this->options['class']) ? $this->options['class'] : '';
-        $classes .= ' sortable';
-        $this->options['class'] = trim($classes);
+        Html::addCssClass($this->options, 'sortable');
 
         $view = $this->getView();
         JuiAsset::register($view);
