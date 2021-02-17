@@ -1,8 +1,8 @@
 <?php
 /**
  * MIT licence
- * Version 1.1.0
- * Sjaak Priester, Amsterdam 28-08-2014 ... 06-01-2019.
+ * Version 1.2
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 17-02-2021.
  * https://sjaakpriester.nl
  *
  * ActiveRecord Behavior for Yii 2.0
@@ -43,10 +43,13 @@ class Sortable extends Behavior {
      */
     public $orderAttribute = 'ord';
 
+    protected $_attributes;
+
     public function events()    {
         return [
             ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
             ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            ActiveRecord::EVENT_AFTER_DELETE => 'afterDelete',
             ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
         ];
     }
@@ -56,15 +59,26 @@ class Sortable extends Behavior {
      * @throws \yii\db\Exception
      */
     public function beforeInsert($event)  {
-        $this->saveDelHelper([$this, 'addToOrder']);
+        $attrs = $this->owner->getAttributes();
+        $this->saveDelHelper([$this, 'addToOrder'], $attrs);
+    }
+
+    /**
+     * @param $event
+     */
+    public function beforeDelete($event)  {
+        $this->_attributes = $this->owner->getAttributes();
+        return true;
     }
 
     /**
      * @param $event
      * @throws \yii\db\Exception
+     * Update counters after deletion, so that order attributes can be UNIQUE
+     * Issue #4
      */
-    public function beforeDelete($event)  {
-        $this->saveDelHelper([$this, 'removeFromOrder']);
+    public function afterDelete($event)  {
+        $this->saveDelHelper([$this, 'removeFromOrder'], $this->_attributes);
     }
 
     /**
@@ -131,7 +145,7 @@ class Sortable extends Behavior {
      * @param $func
      * @throws \yii\db\Exception
      */
-    protected function saveDelHelper($func) {
+    protected function saveDelHelper($func, $attributes) {
         $conf = $this->orderAttribute;
         if (is_string($conf)) $conf = [$conf];
 
@@ -144,7 +158,7 @@ class Sortable extends Behavior {
 
         try {
             foreach ($conf as $fk => $orderAttr)   {
-                $where = is_integer($fk) ? 1 : [$fk => $owner->getAttribute($fk)];
+                $where = is_integer($fk) ? 1 : [$fk => $attributes[$fk]];
                 call_user_func($func, $orderAttr, $where);
             }
             $trans->commit();

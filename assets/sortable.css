@@ -1,0 +1,26 @@
+tr, li {
+    border-top-width: 4px;
+    border-top-style: solid;
+}
+li {
+    border-top-color: transparent;
+}
+li.d-dummy {
+    list-style-type: none;
+}
+[draggable] {
+    cursor: grab;
+}
+.d-over {
+    border-top-color: red;
+}
+.d-dragged {
+    opacity: .4;
+}
+@keyframes dropped-fade {
+    from { background-color: lightsalmon; }
+    to { background-color: white; }
+}
+.d-dropped {
+    animation: dropped-fade 3s 1;
+}

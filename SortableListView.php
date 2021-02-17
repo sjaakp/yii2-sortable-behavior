@@ -1,13 +1,13 @@
 <?php
 /**
  * MIT licence
- * Version 1.0.2
- * Sjaak Priester, Amsterdam 28-08-2014 ... 24-04-2019.
+ * Version 1.2
+ * Sjaak Priester, Amsterdam 28-08-2014 ... 15-02-2021.
  * https://sjaakpriester.nl
  *
  * Sortable ListView for Yii 2.0
  *
- * ListView which is made sortable by means of the jQuery Sortable widget.
+ * ListView which is made sortable by means of HTML Drag and Drop.
  * After each order operation, order data are posted to $orderUrl in the following format:
  * - $_POST["key"] - the primary key of the sorted ActiveRecord,
  * - $_POST["pos"] - the new position, zero-indexed.
@@ -17,11 +17,8 @@
 namespace sjaakp\sortable;
 
 use yii\helpers\Html;
-use yii\widgets\ListView;
-use yii\jui\JuiAsset;
-use yii\helpers\Json;
 use yii\helpers\Url;
-use yii\web\JsExpression;
+use yii\widgets\ListView;
 
 /**
  * Class SortableListView
@@ -42,16 +39,13 @@ class SortableListView extends ListView {
 
     /**
      * @var array
-     * The options for the jQuery sortable object.
-     * @link http://api.jqueryui.com/sortable/ .
-     * Notice that the options 'items' and 'update' will be overwritten.
-     * Default: empty array.
+     * For compatibility only
      */
     public $sortOptions = [];
 
     /**
      * @var boolean|string
-     * The 'axis'-option of the jQuery sortable. If false, it is not set.
+     * For compatibility only
      */
     public $sortAxis = 'y';
 
@@ -62,38 +56,23 @@ class SortableListView extends ListView {
     {
         parent::init();
 
-        $id = $this->getId();
-        $this->options['id'] = $id;
+        Html::addCssClass($this->options, 'd-sortable');
+        $this->options['tag'] = 'ul';
 
-        Html::addCssClass($this->options, 'sortable');
-
-        $view = $this->getView();
-        JuiAsset::register($view);
+        $this->itemOptions = function($model, $key, $index, $list)   {
+            $id = "{$list->id}_$key";
+            return [
+                'tag' => 'li',
+                'id' => $id,
+                'draggable' => 'true'
+            ];
+        };
 
         $url = Url::toRoute($this->orderUrl);
 
-        $sortOpts = array_merge($this->sortOptions, [
-            'items' => '[data-key]',
-            'update' => new JsExpression("function(e, ui) {
-                jQuery('#{$id}').addClass('sorting');
-                jQuery.ajax({
-                    type: 'POST',
-                    url: '$url',
-                    data: {
-                        key: ui.item.data('key'),
-                        pos: ui.item.index('[data-key]')
-                    },
-                    complete: function() {
-                        jQuery('#{$id}').removeClass('sorting');
-                    }
-                });
-            }")
-        ]);
+        $view = $this->getView();
+        SortableAsset::register($view);
 
-        if ($this->sortAxis) $sortOpts['axis'] = $this->sortAxis;
-
-        $sortJson = Json::encode($sortOpts);
-
-        $view->registerJs("jQuery('#{$id}').sortable($sortJson);");
+        $view->registerJs("sortable('$url', 'ul.d-sortable', 'li');");
     }
 }

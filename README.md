@@ -1,6 +1,10 @@
 Yii2 Sortable
 =============
 
+[![Latest Stable Version](https://poser.pugx.org/sjaakp/yii2-sortable-behavior/v/stable)](https://packagist.org/packages/sjaakp/yii2-sortable-behavior)
+[![Total Downloads](https://poser.pugx.org/sjaakp/yii2-sortable-behavior/downloads)](https://packagist.org/packages/sjaakp/yii2-sortable-behavior)
+[![License](https://poser.pugx.org/sjaakp/yii2-sortable-behavior/license)](https://packagist.org/packages/sjaakp/yii2-sortable-behavior)
+
 This package contains five classes to handle the sorting of ActiveRecords:
 
 - **SortableGridView** - extended GridView widget;
@@ -9,11 +13,20 @@ This package contains five classes to handle the sorting of ActiveRecords:
 - **PivotRecord** - base class for the ActiveRecord of the pivot table in a many-to-many relation.
 - **MMSortable** - ActiveRecord Behavior to handle the sorting of many-to-many related records.
 
+The previous version of **Sortable** was dependent on [jQuery](https://jquery.com/). It now has 
+no dependencies at all. It should work in all modern desktop browsers. At the time of writing the new HTML Drag and Drop, and thus **Sortable**,
+only works for few
+[mobile browsers](https://developer.mozilla.org/en-US/docs/Web/API/Document/dragenter_event#browser_compatibility).
+
+The old [jQuery-dependent widgets](#sortable-with-jquery) are still available.
+Some may prefer their esthetics.
+
+
 A demonstration of the **Sortable** suit is [here](http://www.sjaakpriester.nl/director/index).
 
 ## Installation ##
 
-The preferred way to install **Sortable** is through [Composer](https://getcomposer.org/). Either add the following to the require section of your `composer.json` file:
+The preferred way to install **Sortable** is through [Composer](https://getcomposer.org/). Either add the following to the `require` section of your `composer.json` file:
 
 `"sjaakp/yii2-sortable-behavior": "*"` 
 
@@ -25,29 +38,26 @@ You can manually install **Sortable** by [downloading the source in ZIP-format](
 
 ## SortableGridView and SortableListView ##
 
-These widgets are derived from the standard GridView and ListView classes, but have one extra capability: the items can be moved to another position by means of drag and drop (using the jQuery UI Sortable functionality). If an item is dropped on a new position, an Ajax-message is posted with the following data:
+These widgets are derived from the standard GridView and ListView classes, 
+but have one extra capability: the items can be moved to another position 
+by means of drag and drop (using 
+[HTML Drag and Drop](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API)
+functionality). 
+If an item is dropped on a new position, a message is posted with the following data:
 
 - `key`: the value of the item's primary key;
 - `pos`: the zero-indexed new position of the item.
 
-**SortableGridView** and **SortableListView** have three extra configurable properties:
+**SortableGridView** and **SortableListView** have one configurable property:
 
 #### orderUrl ####
 
 `array|string`. The URL which is called after a sorting operation.
 The format is that of `yii\helpers\Url::toRoute`.
 
-#### sortOptions ####
-
-`array`. The options for the jQuery sortable object. See [https://api.jqueryui.com/sortable/](http://api.jqueryui.com/sortable/).
-
-Notice that the options `'items'`, `'helper'`, and `'update'` will be overwritten.
-
-Default: `[]` (empty array).
-
-#### sortAxis ####
-
-`boolean|string` The `'axis'` option for the jQuery sortable. If `false`, it is not set. Default: `'y'`.
+**SortableGridView** and **SortableListView** don't go together with 
+the [Pjax-widget](https://www.yiiframework.com/doc/api/2.0/yii-widgets-pjax).
+However, **Sortable** is not very usable with paged data-widgets anyway. 
 
 ## Sortable ##
 
@@ -172,7 +182,7 @@ We add two columns to our `movie` table:
 
 Where `director_ord` is the order attribute just for movies belonging to the same director.
 
-In the `Director` model we define an one-to-many relation, like we would normally do (notice the `orderBy` clause): 
+In the `Director` model we define a one-to-many relation, like we would normally do (notice the `orderBy` clause): 
 
 	class Director extends ActiveRecord	{
 		...
@@ -282,7 +292,7 @@ Using best practices it means:
 - the **primary key** column names consist of the related table name followed by `'_id'`;
 - the **order** column names consist of the related table name followed by `'_ord'`;
 
-Of course it would be wise to add some indexes.
+Of course, it would be wise to add some indexes.
 
 A concrete pivot record *has* to be derived  from **PivotRecord**. Two static functions *must* be defined in the derived class:
 
@@ -344,7 +354,7 @@ These are **member** functions. The id's of `classA` and `classB` are stored in 
 
 ## MMSortable ##
 
-This is a Behavior of both partner ActiveRecords in a many-to-many relations. **PivotRecord** relies on it. **MMSortable** performs some house keeping and has no (interesting) member functions. However, two properties *have* to be configured:
+This is a Behavior of both partner ActiveRecords in a many-to-many relations. **PivotRecord** relies on it. **MMSortable** performs some housekeeping and has no (interesting) member functions. However, two properties *have* to be configured:
 
 #### pivotClass ####
 
@@ -443,7 +453,39 @@ Now, in `movie/view`, we can display a **SortableGridView** with all the actors 
 		...
     ] ); ?>
 
+## Sortable with jQuery ##
+
+The previous version of **Sortable** (1.0) used 
+[jQuery Draggable and Sortable](https://jqueryui.com/draggable/#sortable). 
+The old jQuery-widgets are still available as **SortableGridViewJquery**
+and **SortableListViewJquery**. They are exchangeable with their non-jQuery
+counterparts.
+
+You may prefer the esthetics of the jQuery variants. Also, the new 
+HTML Drag and Drop may not work for all 
+[mobile browsers](https://developer.mozilla.org/en-US/docs/Web/API/Document/dragenter_event#browser_compatibility).
+
+**SortableGridViewJquery** and **SortableListViewJquery** have two extra 
+configurable properties:
+
+#### sortOptions ####
+
+`array`. The options for the jQuery sortable object. See [https://api.jqueryui.com/sortable/](http://api.jqueryui.com/sortable/).
+
+Notice that the options `'items'`, `'helper'`, and `'update'` will be overwritten.
+
+Default: `[]` (empty array).
+
+#### sortAxis ####
+
+`boolean|string` The `'axis'` option for the jQuery sortable. 
+If `false`, it is not set. Default: `'y'`.
+
+For compatibility, **SortableGridView** and **SortableListView** have these
+options as well, but they are not functional.
+
 ## Thanks ##
 
 - **mike-kramer** (sortAxis option)
 - **menshakov** (use updateAttributes)
+- **robsch** (subtle order bug)
